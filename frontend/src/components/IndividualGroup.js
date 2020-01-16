@@ -142,7 +142,7 @@ const IndividualGroup = (props) => {
 
   /// GET ALL NECESSARY DATA ****************************************************************************** //
   function fetchGroupData() {
-    axios.get(`/api/groups/${props.match.params.id}`, {
+    axios.get(`/api/groups/${props.match.params.id}/`, {
       headers: { Authorization: `Bearer ${Auth.getToken()}` }
     })
       .then(resp => {
@@ -163,7 +163,7 @@ const IndividualGroup = (props) => {
 
   function fetchMemberData(members, memberData) {
     members.forEach(member => {
-      axios.get(`/api/profile/${member.id}`, {
+      axios.get(`/api/profile/${member.id}/`, {
         headers: { Authorization: `Bearer ${Auth.getToken()}` }
       })
         .then(resp => {
