@@ -8,7 +8,7 @@ import GroupForm from './GroupForm'
 import { toast } from 'react-toastify'
 
 const Groups = (props) => {
-  const notify = () => toast('Group membership requested!', {
+  const notify = (message) => toast(message, {
     progressClassName: 'toast-progress'
   })
 
@@ -23,7 +23,7 @@ const Groups = (props) => {
 
 
   function fetchGroupData() {
-    axios.get('/api/groups', {
+    axios.get('/api/groups/', {
       headers: { Authorization: `Bearer ${Auth.getToken()}` }
     })
       .then(resp => {
@@ -57,7 +57,7 @@ const Groups = (props) => {
       headers: { Authorization: `Bearer ${Auth.getToken()}` }
     })
       .then(resp => {
-        props.history.push(`/groups/${resp.data.id}/`)
+        props.history.push(`/group_route/${resp.data.id}/`)
         notify('Group Created!')
       })
       .catch(err => {
@@ -67,7 +67,7 @@ const Groups = (props) => {
   }
 
   function goToGroupProfile(e) {
-    props.history.push(`/groups/${e.target.id}`)
+    props.history.push(`/groups/${e.target.id}/`)
   }
 
   function sendRequest(e) {
@@ -77,7 +77,7 @@ const Groups = (props) => {
       .then(resp => {
         // console.log(resp)
         fetchGroupData()
-        notify()
+        notify('Membership requested!')
       })
       .catch(err => {
         console.log(err)
@@ -201,6 +201,5 @@ const Groups = (props) => {
     </section>
   )
 }
-
 
 export default Groups

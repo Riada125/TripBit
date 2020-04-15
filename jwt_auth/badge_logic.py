@@ -1,9 +1,6 @@
-# Functions to check which badges are awarded
-# from django.apps import apps
-# Badge = apps.get_model('badges', 'Badge')
 from travels.models import Badge, Town
 from travels.serializers import BadgeSerializer
-# from .travels.models import Badge
+
 
 all_countries = ['Afghanistan', 'Albania', 'Algeria', 'Angola', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas, The', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia And Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Myanmar', 'Burundi', 'Cabo Verde', 'Cambodia', 'Cameroon', 'Canada', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo (Brazzaville)', 'Congo (Kinshasa)', 'Costa Rica', 'Côte D’Ivoire', 'Croatia', 'Cuba', 'Curaçao', 'Cyprus', 'Czechia', 'Denmark', 'Djibouti', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia', 'Fiji', 'Finland', 'France', 'French Polynesia', 'Gabon', 'Gambia, The', 'Georgia', 'Germany', 'Ghana', 'Gibraltar', 'Greece', 'Guadeloupe', 'Guam', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana', 'Haiti', 'Honduras', 'Hong Kong', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Korea, North', 'Korea, South', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Lithuania', 'Luxembourg', 'Macau', 'Macedonia', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Martinique', 'Mauritania', 'Mauritius', 'Mexico', 'Moldova', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Namibia', 'Nepal', 'Netherlands', 'New Caledonia', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'Norway', 'Oman', 'Pakistan', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Puerto Rico', 'Qatar', 'Reunion', 'Romania', 'Russia', 'Rwanda', 'Sao Tome And Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Somalia', 'South Africa', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Swaziland', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste', 'Togo', 'Trinidad And Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'] 
 
@@ -142,41 +139,14 @@ def get_badges(towns):
             pass
 
 
-    # print('Michael Badges', badge_ids)
+  
     return badge_ids
-
-    # to_update_user.data['badges'].append(badge_ids)
-    # revised_user = UserSerializer(User, data=to_update_user.data)
-    # if (revised_user.is_valid()):
-    #     to_update_user = revised_user
-    #     to_update_user.save()
-
-    # def put(self, request, pk):
-    #     request.data['owner'] = request.user.id
-    #     user = User.objects.get(pk=pk)
-    #     user_towns = Town.objects.filter(id__in=request.data.towns)
-
-    #     user_badges = get_badges(user_towns)
-
-    # ... update the user somehow with new towns and badges and
-    # post to database: User.save()
-
-    # from database you get current users and their towns and badges: Users.objects.all()
-    # platform_winners = get_platform_winners(users)
-    # update badges with the winners
-    # platform_badges.save()
-
-
-# get_badges(single_user['towns'])
 
 
 # Badges based on everybody's cities
 
 def get_most_countries_badge(users):
 
-    # print(users, 'lets see the users!!!!')
-
-    # most countries (214)
 
     def count_user_countries(person):
         all_user_town_countries = list(map(lambda town: town['country'], person['towns']))
@@ -210,8 +180,6 @@ def get_most_countries_badge(users):
         badge = updated_badge
         badge.save()
 
-    # most cities (215)
-    # untested function
 
 def get_most_cities_badge(users):
 
@@ -328,12 +296,8 @@ def get_platform_badges(users):
 
 def get_user_badges(user):
     person = user.data
-    # no idea why this doesnt run!
-    # print(type(all_user_towns), 'DOES THIS RUN??') 
     return get_badges(person['towns'])
 
 def get_user_score(user):
     person = user.data
-    # no idea why this doesnt run!
-    # print(type(all_user_towns), 'DOES THIS RUN??') 
     return get_score(person['towns'])

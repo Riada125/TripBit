@@ -131,16 +131,6 @@ class UserView(APIView):
         return Response(serialized_user.data)
 
 
-    # def post(self, request, pk): 
-    #         request.data['owner'] = request.user.id 
-    #         request.data['post'] = pk # attach the post id from the url to comment
-    #         town = TownSerializer(data=request.data) # serialize the comment
-    #         if town.is_valid(): # if the comment is valid
-    #             town.save() # save the comment
-    #         return Response(town.errors, status=HTTP_422_UNPROCESSABLE_ENTITY) # send back any errors from the comment if it wasnt valid
-
-    
-
 class UserListView(APIView):
 
     permission_classes = (IsAuthenticated, )
