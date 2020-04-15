@@ -56,6 +56,7 @@ const Login = ({ props }) => {
                   name='email'
                   type='email'
                   placeholder='Email'
+                  value={login.data.email}
                 />
                 <span className='icon is-small is-left'>
                   <i className='fas fa-envelope'></i>
@@ -70,6 +71,7 @@ const Login = ({ props }) => {
                   className='input has-text-info'
                   type='password'
                   placeholder='Password'
+                  value={login.data.password}
                 />
                 <span className='icon is-small is-left'>
                   <i className='fas fa-lock'></i>

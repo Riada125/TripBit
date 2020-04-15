@@ -58,6 +58,7 @@ const Groups = (props) => {
     })
       .then(resp => {
         props.history.push(`/groups/${resp.data.id}/`)
+        notify('Group Created!')
       })
       .catch(err => {
         setDetails({ errors: 'Both name and description are required' })

@@ -14,8 +14,6 @@ const SearchBar = ({ toggleSearch, searchModal }) => {
     })
       .then(response => {
         setData(response.data)
-        // console.log(data)
-        // console.log(response.data)
       })
       .catch(error => console.log(error))
   }, [searchModal])

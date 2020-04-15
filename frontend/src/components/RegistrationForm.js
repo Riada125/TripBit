@@ -59,19 +59,17 @@ const Register = ({ toggleRegistration, toggleLogin }) => {
                   name='username'
                   className='input has-text-info'
                   placeholder='Username'
+                  value={register.data.username}
                 />
                 <span className='icon is-small is-left'>
                   <i className='fas fa-user'></i>
                 </span>
-                {/* <span className='icon is-small is-right'>
-                  <i className='fas fa-check'></i>
-                </span> */}
+  
               </div>
               {register.errors.username && <small className='help is-danger'>
                 {register.errors.username[0]}
               </small>}
-              {/* can we implement this somehow? */}
-              {/* <p className='help is-success'>This username is available</p> */}
+
             </div>
 
             <div className='field'>
@@ -82,6 +80,7 @@ const Register = ({ toggleRegistration, toggleLogin }) => {
                   type='text'
                   name='first_name'
                   placeholder='First name'
+                  value={register.data.first_name}
                 />
                 <span className='icon is-small is-left'>
                   <i className='fas fa-id-card'></i>
@@ -100,6 +99,7 @@ const Register = ({ toggleRegistration, toggleLogin }) => {
                   type='text'
                   name='last_name'
                   placeholder='Last name'
+                  value={register.data.last_name}
                 />
                 <span className='icon is-small is-left'>
                   <i className='fas fa-id-card'></i>
@@ -118,6 +118,7 @@ const Register = ({ toggleRegistration, toggleLogin }) => {
                   name='email'
                   type='email'
                   placeholder='Email'
+                  value={register.data.email}
                 />
                 <span className='icon is-small is-left'>
                   <i className='fas fa-envelope'></i>
@@ -140,6 +141,7 @@ const Register = ({ toggleRegistration, toggleLogin }) => {
                     type='password'
                     name='password'
                     placeholder='Password'
+                    value={register.data.password}
                   />
                   <span className='icon is-small is-left'>
                     <i className='fas fa-lock'></i>
@@ -160,6 +162,7 @@ const Register = ({ toggleRegistration, toggleLogin }) => {
                     type='password'
                     name='password_confirmation'
                     placeholder='Password confirmation'
+                    value={register.data.password_confirmation}
                   />
                   <span className='icon is-small is-left'>
                     <i className='fas fa-lock'></i>

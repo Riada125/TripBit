@@ -20,9 +20,7 @@ const Settings = ({ data, errors, handleChange, modalSubmit }) => {
                 <span className='icon is-small is-left'>
                   <i className='fas fa-user'></i>
                 </span>
-                {/* <span className='icon is-small is-right'>
-                  <i className='fas fa-check'></i>
-                </span> */}
+     
               </div>
             </div>
             {errors.username && <small className='help is-danger'>
