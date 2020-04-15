@@ -71,9 +71,9 @@ const Navbar = ({ toggleSearch }) => {
                 <div className="placeholder">
                   <div className="upside">
 
-                    <Link to="'/group_route/groups/'" className="navbutton" onClick={toggleNavbar}> <i className="fa fa-users"></i> </Link>
+                    <Link to="/reroute/groups/" className="navbutton" onClick={toggleNavbar}> <i className="fa fa-users"></i> </Link>
                     {'\n'}
-                    <Link to="'/group_route/groups/'"> <p className="navbar-links" onClick={toggleNavbar}>GROUPS</p> </Link>
+                    <Link to="/reroute/groups/"> <p className="navbar-links" onClick={toggleNavbar}>GROUPS</p> </Link>
                   </div>
                 </div>
               </li>
@@ -198,9 +198,9 @@ const Navbar = ({ toggleSearch }) => {
                 <div className="placeholder">
                   <div className="upside">
 
-                    <Link to="'/group_route/groups/'" className="navbutton"> <i className="fa fa-users" onClick={toggleNavbar}></i> </Link>
+                    <Link to="/reroute/groups/" className="navbutton"> <i className="fa fa-users" onClick={toggleNavbar}></i> </Link>
                     {'\n'}
-                    <Link to="'/group_route/groups/'"> <p className="navbar-links" onClick={toggleNavbar}>GROUPS</p> </Link>
+                    <Link to="/reroute/groups/"> <p className="navbar-links" onClick={toggleNavbar}>GROUPS</p> </Link>
                   </div>
                 </div>
               </li>
