@@ -48,7 +48,7 @@ const App = () => {
       value={loginInfo}>
       <Navbar toggleSearch={toggleSearch} />
       <Switch>
-        <Redirect from='/group_route/groups/' to='/groups' />
+        <Redirect from='/route/groups/' to='/groups' />
         <Redirect from='/reroute/:id' to='/profile/:id' />
         <Route exact path="/" component={Hero} />
         <SecureRoute exact path="/profile/:id" component={Profile} />
