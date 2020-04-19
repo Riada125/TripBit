@@ -4,24 +4,28 @@
 
 by [Michael Adair](https://github.com/mjadair), [Kathrin Eichinger](https://github.com/katheich), [Georg Preuß](https://github.com/georgpreuss) & [Reggie Tachie-Menson](https://github.com/reggiemenson) 
 
+<img  src=docs/screenshots/DesktopHome.png width=500> <img  src=docs/screenshots/MobileHome.png height=250> 
+
 ## Overview
 
-This is the final project of the software engineering immersive course at GA London. The assignment was to create a **full-stack application** within **one week**, and we chose to complete it in a **team of four**. 
+TripBit is a digital 'scratch map', where people can highlight and visualise the countries and cities that they have visited. Users select the cities they have travelled to, are assigned a travel score and can earn badges for certain achievements. They can also create and join groups to compare their travels with friends more directly. All of this is achieved by using the Django REST framework with a PostgreSQL database and a React front-end.
 
-TripBit is a platform inspired by analogue scratch maps, where people scratch out the countries they have visited. Users select the cities they have travelled to, are assigned a travel score and can earn badges for certain achievements. They can also create and join groups to compare their travels with friends more directly. All of this is achieved by using the Django REST framework with a PostgreSQL database and a React front-end.
+The app was built in a team of four as part of the final project of General Assembly's Software Engineering Immersive Bootcamp. 
 
-You can launch the app on Heroku [here](https://tripbit.herokuapp.com/), or find the GitHub repo [here](https://github.com/katheich/tripbit).
+You can launch the app on Heroku [here](http://trip-bit.herokuapp.com/), or find the GitHub repo [here](https://github.com/mjadair/TripBit).
 
 ---
 ***NOTE***
 
 If you would like to test the app, you can create your own account (the email address does not need to be real) or please feel free to use the following credentials for a demo account:
 
-**Email**: lin-manuel@miranda.com
+**Email**: SeaCaptain@TripBitDemo.com
 
 **Password**: Password2020
 
 ---
+
+
 
 
 ## Table of contents
@@ -75,10 +79,10 @@ If you would like to test the app, you can create your own account (the email ad
 
 ### Planning
 
-- On the first day we came up with the idea of the app and the wireframes for the main pages.
+- On the first day we came up with the idea of the app and created the wireframes for the main pages.
 ![Wireframe](./docs/wireframe.png)
 
-- We also planned out the models and end points that we would need on the back-end and divided the tasks among us using Trello.
+- We also meticulously planned our models, SQL relationships and end points that we would need on the back-end and divided the tasks among us using Trello.
 
 
 ### Back-end
@@ -87,7 +91,7 @@ If you would like to test the app, you can create your own account (the email ad
 
 - For the PostgreSQL database, we set up four tables: Users, Towns, Badges and Groups.
 
-- For the users, we extended the basic User provided by Django to include the following extra fields: email, profile image (with a default so it was not necessary to register), score (starting at the default of 0), dexterity (determining whether the navbar is located on the right or left-hand side of the screen), first and last name.
+- For the users, we extended the basic User provided by Django to include the following extra fields: email, profile image (with a default so it was not necessary for the user to provide one upon registration), score (starting at the default of 0), dexterity (determining whether the navbar is located on the right or left-hand side of the screen), first and last name.
 
   ```py
   class User(AbstractUser):
@@ -105,9 +109,9 @@ If you would like to test the app, you can create your own account (the email ad
     last_name = models.CharField(max_length=100)
   ```
 
-- For the towns, we relied on the World Cities Database provided by Simplemaps, and so used the same fields as were available in that dataset. 
+- For the towns, we relied on the World Cities Database provided by Simplemaps, and so used the same fields as were available in that dataset. We named the model towns instead of cities because of PostgreSQL and Django's default of pluralising fields with a many to many relationship by simply appending 's'. None of us could bear to be continuously referring to 'citys'.
 
-  - We reduced the dataset by considering only towns with more than 80,000 inhabitants. We then read the resulting .csv file into our PostgreSQL database using the terminal (as shown below). Once the data was read in, we created a fixtures.json file that would allow for more easily re-seeding the database in the format we needed.
+  - We reduced the dataset taken from World Cities Database by only including towns with more than 80,000 inhabitants. We then imported the resulting .csv file into our PostgreSQL database from the terminal (as shown below). Once the data was read in, we created a fixtures.json file that would allow for more easily re-seeding the database in the format we needed.
 
   ```py
   python manage.py shell
@@ -146,7 +150,7 @@ If you would like to test the app, you can create your own account (the email ad
         return f'{self.name} - {self.country}'
   ```
 
-- For the badges, we similarly created a csv file outlining the names, descriptions and links to the images that we wanted to use, that was then read into the database via the terminal the same way as the towns data and eventually added to the fixtures file. Additionally, the badges also have a **many-to-many** relationship to users, showing all the users that have earned a given badge.
+- For the badges model, we similarly created a csv file outlining the names, descriptions and links to the images that we wanted to use, that was then input into the database via the terminal the same way as the towns data and eventually added to the fixtures file. The badges also have a **many-to-many** relationship to users, showing all the users that have earned a given badge.
 
   ```py
   class Badge(models.Model):
@@ -208,11 +212,33 @@ If you would like to test the app, you can create your own account (the email ad
 - `/register` only has a post route, where the user's data is received and stored in the database.
 - Similarly, `/login` only has a post route, where the user's login information is received, checked and, if valid, a JWT token is returned as response.
 - `/users` is a simple GET route, that provides a full list of users to allow searching for other users to access their profiles.
-- `/profile/<int:pk>/` similarly only has a GET route to fetch a specific user profile to be displayed.
+- `/profile/<int:pk>/` has a GET route to fetch a specific user profile to be displayed.
 - `/profile` has a GET, PUT and DELETE route, all relating to the user data of the user currently logged in, allowing them to respectively fetch, amend and delete their profile information.
 - `/profile/edit/all` is the most complex part of the platform, even though it only involves a PUT route. This is the route via which a user adds towns that they have visited to their profile, setting off a chain-reaction:
-  - The route is set up to always receive the full list of towns a given user has visited. These towns are added to the user in the database.
-  - Given this list of towns, the badges that the user has earned are determined. This is done via bespoke functions for each type of badge in the database, for instance the 'Columbus badge' (with ID 209 in the database) is determined as follows:
+	- The route is set up to always receive the full list of towns a given user has visited. These towns are added to the user in the database.
+
+```py
+ def put(self, request):
+        initial_user = User.objects.get(pk=request.user.id)
+        updated_user = UserSerializer(initial_user, data=request.data)
+        if (updated_user.is_valid()):
+            initial_user = updated_user
+            initial_user.save()
+            new_user = User.objects.get(pk=request.user.id)
+            user_data = PopulatedUserSerializer(new_user)
+            
+```
+
+- Given this list of towns, the badges that the user has earned are determined with the `get_user_badges` function. 
+
+```py
+ badges = get_user_badges(user_data)
+ score = get_user_score(user_data)
+
+```
+  
+ - This function includes a range of methods for each type of badge in the database, for instance the 'Columbus badge' (with ID 209 in the database) is determined like so:
+
 
     ```py
     all_user_countries = list(map(lambda town: town['country'], towns))
@@ -223,9 +249,57 @@ If you would like to test the app, you can create your own account (the email ad
     if 'Portugal' in unique_user_countries and 'Spain' in unique_user_countries and 'South America' in unique_continents:
         badge_ids.append(209)
     ```
-  - Once this individual user's new badges have been allocated, the badges that rely on comparing information across users are re-assessed: checking which user has visited the most cities, countries, continents and earned the most badges. These users are saved to the badges directly.
-  - Following this, we return to the individual user who posted new towns, whose score is now determined, adding 5 XP per town, 10 XP per capital, 20 XP per country and 50 XP per continent visited.
-  - All of this new information is added to the user profile, which is then finally saved in the database.
+ - Once this individual user's new badges have been allocated, the platform badges that rely on comparing information across users are re-assessed: checking which user has visited the most cities, countries, continents and earned the most badges. These users are saved to the badges directly.
+
+
+```py
+         all_users = User.objects.all()
+                serialized_userList = PopulatedUserSerializer(all_users, many=True)
+                get_platform_badges(serialized_userList)
+```
+
+- The `get_platform_badges` function contains a number of methods to ascertain who the single holder of a platform badge is. An example of one of the methods is below:
+
+```py
+def get_most_countries_badge(users):
+
+
+    def count_user_countries(person):
+        all_user_town_countries = list(map(lambda town: town['country'], person['towns']))
+
+        unique_user_countries = set(all_user_town_countries)
+        return unique_user_countries
+
+    badge = Badge.objects.get(pk=214)
+
+    serialized_badge = BadgeSerializer(badge)
+
+    leader = False
+
+    serialized_badge.data['users'].clear()
+
+    for user in users.data:
+        current_user = count_user_countries(user)
+
+        if leader is not False:
+            current_leader = count_user_countries(leader)
+
+            if len(current_user) > len(current_leader):
+                leader = user
+
+        else:
+            leader = user
+    
+    serialized_badge.data['users'].append(leader['id'])
+    updated_badge = BadgeSerializer(badge, data=serialized_badge.data)
+    if (updated_badge.is_valid()):
+        badge = updated_badge
+        badge.save()
+```
+  
+  
+- Following this, we return to the individual user who posted new towns, whose score is now determined, adding 5 XP per town, 10 XP per capital, 20 XP per country and 50 XP per continent visited.
+- All of this new information is added to the user profile, which is then finally saved in the database.
 
 
 #### 2. Town
@@ -234,7 +308,7 @@ If you would like to test the app, you can create your own account (the email ad
   |----------------------	|-----	|------	|-----	|--------	|
   | /towns         	|  x  	|    	|     	|        	|
 
-- `/towns` only has a GET route, since the town data is only displayed and never amended directly. It was a conscious choice to have users only add towns they have visited via the `/profile/edit/all` route outlined above, in order to ensure that all the other information that depended on the list of towns would always be updated correctly.
+- `/towns` only has a GET route, since the town data is only displayed and never amended by a user. It was a conscious choice to have users only add towns they have visited via the `/profile/edit/all` route outlined above, in order to ensure that all the other information that depended on the list of towns would always be updated correctly.
 
 #### 3. Badge
 
@@ -262,9 +336,14 @@ If you would like to test the app, you can create your own account (the email ad
 
 ### Front-end
 
+
+
+
 **Homepage/Map page**
 
-- The hompage and map page use the same svg world map. The base file was obtained from amCharts, who provided the paths of the SVG with country name labels. Based on these, the colouring could be done conditionally on these names checking against the data from the back-end, for example the path for Great Britain is the following:
+<img  src=docs/screenshots/DesktopMap.png width=500> <img  src=docs/screenshots/MobileMap.png height=250> 
+
+- The hompage and map page use the same svg world map. The base file was obtained from amCharts, who provided the paths of the SVG with country name labels. Based on these, the colouring could be done conditionally on the country code checking for a match against the data from the back-end. The className for the country changes if there is a match, allowing it to appear shaded if it has been found. For example the path for Great Britain is the following:
 
   ```js
   <g className="country">
@@ -294,7 +373,9 @@ If you would like to test the app, you can create your own account (the email ad
 
 **User/Group Profiles**
 
-- The user and group profile pages largely have the same features and therefore follow the same structure.
+<img  src=docs/screenshots/DesktopProfile.png width=500> <img  src=docs/screenshots/MobileProfile.png height=250> 
+
+- The user and group profile pages largely have the same features as each other and therefore follow the same structure.
 
 - Both user and group profiles are largely made up of a map using React Map GL, showing all the towns that the user / group members have visited. The component calculates the midpoint of all these locations and centers the map accordingly:
 
@@ -321,32 +402,61 @@ If you would like to test the app, you can create your own account (the email ad
 
 - We allow users to upload profile images and group images using the FileStack API. The image uploaded via this interface is saved with FileStack, which returns a link to the file on their servers, which is in turn saved in our database.
 
+<img  src=docs/screenshots/filestack.png width=500>
+
 - For the user pages, we also display the badges. The images saved on the back-end do not have any specific styling, so we added the crayon mask above to make it look like they were 'scratched' off.
 
 - The user profile also has an edit button, that allows the user to edit their personal information.
 
 - The group profile has a different set of buttons depending on who is viewing the group:
 
-  - The owner of the group has the ability to edit, manage members and delete the grouop.
+  - The owner of the group has the ability to edit, manage members and delete the group.
+
+   <img  src=docs/screenshots/groupmember.png width=500> 
   - A member of the group has the option to leave the group.
   - A user who has requested access sees a pending symbol.
   - A user who is entirely unaffiliated to the group can request to become a member.
+
+ <img  src=docs/screenshots/groupprofile.png width=500> 
 
 **City selection**
 
 - The component always keeps complete list of towns visited in state, querying the initial list when it is mounted from the API and updating as the user checks or unchecks cities.
 
+```js
+                 .map((town, i) => {
+                        return <div key={i} className="field">
+                          <input
+                            className="is-checkradio is-info"
+                            id={town.id}
+                            type="checkbox"
+                            name={town.id}
+                            onChange={handleCheck}
+                            checked={data.towns.includes(town.id.toString()) ? true : false}
+                          />
+                          <label className="city-checkbox-label" htmlFor={town.id}>{town.name} ({town.admin_name})</label>
+                        </div>
+
+                      })
+```
+
+ <img  src=docs/screenshots/cityselection.png width=500> 
+
 - The 'done' button on this page is the only place where editing of towns occurs, i.e. the only place to go the `/profile/edit/all` route outlined in the back-end section above
 
 **Navbar**
 
-- Took the original from Zed Dash and adapted it for our purposes using pure CSS.
+- This was adapted from [Zed Dash](https://codepen.io/z-/pen/evxZpZ). There's no JavaScript, it's an HTML checkbox with a huge amount of styling on it based on the positions of its children and `:before` and `:after` click events. 
 
-- Allow different positioning based on the dexterity the user indicated in their registration, moving the navbar to the bottom right or left corner accordingly.
+- A fun adjustment that we made was adapting it for our mobile-first design plan. Positioning the navbar at the bottom of the page, on the right or left of the page, based on the user's 'dexterity', left or right-handed, dependent on where their thumb might be!
+
+
 
 **Search bar**
 
 - We wanted to have the searchbar available on every page, and therefore placed it in a Modal (from Bulma) on the root app.js file. The Search icon of the navbar hence simply toggles said modal.
+
+<img  src=docs/screenshots/DesktopSearch.png width=500>
 
 - As we are using the React Hashrouter, we also needed to add a redirection to user profiles to ensure that if the search was called on a profile route, this was still recognised as a different route, we therefore link to profiles from the seach via the following: 
   ```js
@@ -355,7 +465,7 @@ If you would like to test the app, you can create your own account (the email ad
 
 **Toastify**
 
-- For the city selection, user profiles and groups pages we implemented popups using Toastify that provide user feedback for interactions with the API.
+- For the city selection, user profiles and groups pages we implemented pop up notifications using [React Toastify](https://fkhadra.github.io/react-toastify/).
 
 ### File structure
 
@@ -453,9 +563,9 @@ If you would like to test the app, you can create your own account (the email ad
 
 ## Potential future features
 
-- Our original plan encompassed two more features as stretch goals, for which the groundwork is already laid on the back-end, but which we ultimately decided not to pursue during the week: a trips feature and a game.
+- Our original plan encompassed two more features as stretch goals, for which the groundwork is already laid on the back-end, but which we ultimately decided not to pursue during the week: a 'Trips' feature and a game.
 
-- Trips: these were a separate SQL table, allowing a user to add whole trips to their profile, consisting of a list of cities, a start and end date and notes:
+- Trips: these were a separate SQL table, allowing a user to add whole trips to their profile, consisting of a list of cities, a start and end date and their own notes regarding the trip. Like a personal travel diary:
 
   ```py
   class Trip(models.Model):
@@ -536,11 +646,14 @@ If you would like to test the app, you can create your own account (the email ad
 
 - At times the Django API can be very slow, which necessitates giving the user accurate feedback. This was mostly implemented, but we did not yet have time to also do so for the search bar, where one cannot search users until the complete user list has loaded and no indication is given when this has occured.
 
+
+- There are a couple of instances that require a manual user-refresh. For instance, if a user changes their dexterity on their profile, this does not automatically re-render the app, so the navbar will not switch sides until the page reloads. 
+
 ## Lessons learned
 
 - As seen in the section on potential future features, it was important to know in advance what features we could abandon given the short timeframe and to ensure that doing so would have little implications on the functionality of the other features.
 
-- Working in a relatively bigger team already, Trello was extremely useful for clearly spelling out tasks and assigning them, which led to very few instances of redundancy and conflicts in our work.
+- Each of us were working in a team of four for the first time. Trello was extremely useful for clearly spelling out tasks and assigning them, which led to very few instances of redundancy and conflicts in our work.
 
 - As Django wraps a lot of functionality, its errors messages can often be somewhat cryptic to decipher. It is therefore also necessary to specify more nuanced error information coming back from the API to be able to trace back where things went wrong. For example, initially we had multiple instances where Django would simply return a 403 'forbbiden' response to the user. When we kept receiving a 403 upon logging in, it took a long time to track down that this was simply due to not putting a / at the end of the API url on the front-end, so a lot of extra information was appended directly to the url that the API could not make sense of.
 

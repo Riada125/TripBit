@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Select from 'react-select'
-import makeAnimated from 'react-select/animated'
 import axios from 'axios'
 import Auth from '../lib/Auth'
 import {
@@ -26,7 +24,6 @@ const CitySelection = (props) => {
   const [towns, setTowns] = useState([])
   const [errors, setErrors] = useState('')
   const [searchBar, setSearchBar] = useState('')
-  // const [townsVisited, setTownsVisited] = useState([])
   const [user, setUser] = useState({})
   const [data, setData] = useState({
     username: '',
@@ -84,8 +81,6 @@ const CitySelection = (props) => {
   }
 
   function handleCheck(e) {
-    // console.log(e.target.checked)
-    // console.log(e.target.id)
 
     if (e.target.checked) {
       const towns = [...data.towns]
@@ -105,7 +100,6 @@ const CitySelection = (props) => {
       headers: { Authorization: `Bearer ${Auth.getToken()}` }
     })
       .then(resp => {
-        // console.log(resp.data)
         notify()
         props.history.push(`/profile/${resp.data.id}`)
       })
@@ -119,7 +113,6 @@ const CitySelection = (props) => {
   return (
     <section className="section" id="city-selection">
       <div className="container">
-        {/* {console.log(data)} */}
         <h1 className="title">Select cities</h1>
         <h2 className="subtitle">Where have you travelled to?</h2>
 
