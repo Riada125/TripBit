@@ -2,7 +2,7 @@
 # TripBit
 
 
-by [Michael Adair](https://github.com/mjadair), [Kathrin Eichinger](https://github.com/katheich), [Georg Preuß](https://github.com/georgpreuss) & [Reggie Tachie-Menson](https://github.com/mr-anansi) 
+by [Michael Adair](https://github.com/mjadair), [Kathrin Eichinger](https://github.com/katheich), [Georg Preuß](https://github.com/georgpreuss) & [Reggie Tachie-Menson](https://github.com/reggiemenson) 
 
 ## Overview
 
@@ -449,11 +449,6 @@ If you would like to test the app, you can create your own account (the email ad
 ├── webpack.config.js
 └── yarn.lock
 ```
-
-
-## Screenshots
-
-Coming Soon!
 
 
 ## Potential future features

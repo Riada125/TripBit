@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from .models import Town, Trip, Badge, Group
 User = get_user_model()
 
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:

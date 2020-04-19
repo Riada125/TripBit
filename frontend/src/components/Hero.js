@@ -6,8 +6,6 @@ import Login from './LoginForm'
 import WorldMap from './Worldmap'
 import Auth from '../lib/Auth'
 
-// const infoType = 'user'
-
 const Hero = (props) => {
 
   const [registrationModal, setRegistrationModal] = useState(false)
